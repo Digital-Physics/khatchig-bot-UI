@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Khatchig-Bot</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="icon" type="image/x-icon" href="./images/khatchig_fav.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+  <nav>
+    <div class="menu-container">
+      <div class="menu-toggle">
+        <div class="hamburger"></div>
+        <div class="hamburger"></div>
+        <div class="hamburger"></div>
+      </div>
+      <ul class="menu">
+        <li><a href="index.html">Home</a></li>
+      </ul>
+    </div>
+  </nav>
+  <a href="index.html" class="title-link">
+    <h1 class="title">Khatchig-Bot</h1>
+  </a>
+  <div class="main-box">
+    <div class="parent" id="picture">
+        <img class="image-overlay" id="background" src="./images/background_0.png">
+        <img class="image-overlay" src="./images/face.png">
+    </div>
+    <div class="child" id="question"></div>
+    <div class="child" id="answer">
+    </div>
+    <div id="progress" class="child">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+    <div class="inside">
+      <input type="text" class="input-box" id="input-box" placeholder="Have a chat with Khatchig.">
+      <button id="submit-button"></button>
+    </div>
+  </div>
+  <script src="./script.js"></script>
+</body>
+</html>
