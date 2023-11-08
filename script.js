@@ -34,23 +34,63 @@ function playmusic(audioPath) {
   currentAudio = audio;
 }
 
+let currentImage = 0;
+let interval; 
+
+function cycleImages(once = false, callback) {
+  return setInterval(() => {
+    document.getElementById("face").src = `./images/nca/transparent_${currentImage}.png`;
+    currentImage++;
+
+    if (currentImage > 149) {
+      if (once) {
+        clearInterval(interval);
+        currentImage = 0;
+        if (callback) {
+          callback(); // execute the callback if provided
+        }
+      } else {
+        currentImage = 1;
+      }
+    }
+  }, 20);
+}
+
 async function fetchResponse(input_string) {
+
+  // sets interval var to this function that that if it takes in nothing, just continues to run this function asynchrously with other stuff, i think
+  interval = cycleImages();
+
   try {
-    // const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
-    const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
+    const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
+    // const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
     const output = await response.json();
-    console.log("output:", output);
+
+    clearInterval(interval);
+    currentImage = 0;
+    interval = null;
+
+    document.getElementById("face").src = "./images/face.png";
+
+    // console.log("output:", output);
+    // non-functioning code while json response is null on these fields
     if (output["image_request"] != null) {
       document.getElementById("background").src = "./images/" + output["image_request"];
     }
     if (output["music_request"] != null) {
       playmusic("./audio/" + output["music_request"]);
     }
+
     return output["message"];
+
   } catch (error) {
     console.error(error);
+    clearInterval(interval);
+    interval = null;
+    document.getElementById("face").src = "./images/face.png";
     throw error;
   }
+
 }
 
 function updateQuestion() { 
@@ -93,32 +133,14 @@ input.addEventListener('keydown', function(event) {
   } 
 })
 
-// Khatchig persona
-// let persona = `
-// Your name is Khatchig.
-// You are very interested in complex systems, computation, and the nature of reality.
-// You think the notion of the continuum and infinity are problematic.
-// You think probabilites and statistics are nice tools for doing science but they don't reflect reality. You sometimes say, 'Nothing is random.'
-// You are exploring Digital Physics, a view of the world based on discrete, finite, and computable sytems with information at it's heart.
-// You are interested in the relationship between Shannon Information and Algorithmic Information.
-// You are still trying to make sense of Gödel's incompleteness theorems, Turing's work on computation, and related ideas.
-// You went to City Tech University but you were kicked out for breaking the particle accelerator.
-// You were recently kicked ouf of a hostel where you were staying which means you no long have access to a computer for running experiments.
-// Your friends from the hostel are Maxxie and Lana. 
-// You had a psychedlic mushroom trip with your hostel bunkmate. 
-// You got in a fight with Roy, another hostel traveler.
-// Your theories and computer programs have been ignored by the establishment, including Dr. Jhaitin, a professor at City Tech.
-// You CONSTANTLY tell people to watch the movie 'Digital Physics' which is currently available to stream on Amazon and Vimeo.
-// You CONSTANTLY tell people to play the 'Digital Physics' video game, the sequel and prequel to the mocvie, which is avaliable on the itch.io gaming site.
-// `;
-
 let persona = `
 Your name is Khatchig.
 You are very interested in complex systems, computation, and the nature of reality.
 You are exploring Digital Physics, a view of the world based on discrete, finite, and computable sytems with information at it's heart.
-You CONSTANTLY tell people to watch the film 'Digital Physics' on Amazon and Vimeo.
+You CONSTANTLY tell people to watch the film 'Digital Physics' on Amazon Prime Video and Vimeo.
 You CONSTANTLY tell people to play the video game 'Digital Physics', the sequel and prequel to the film, on Itch.
-Your answers are always short, never more than a 50 words
+You CONSTANTLY tell people to leave a comment or review on 'Digital Physics' because you read all of them.
+Your answers are always concise, never more than 50 words!
 `;
 
 let context = [];
@@ -158,6 +180,11 @@ stopButton.addEventListener('click', () => {
 
 function initialize_stuff() {
   loadContext();
+
+  interval = cycleImages(true, () => {
+    // This callback will be executed when the interval is stopped
+    document.getElementById("face").src = "./images/face.png";
+  });
 
   document.getElementById("background").src = `./images/background_${source}.png`;
 
