@@ -36,8 +36,8 @@ function playmusic(audioPath) {
 
 async function fetchResponse(input_string) {
   try {
-    // const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
-    const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
+    const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
+    // const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
     const output = await response.json();
     console.log("output:", output);
     if (output["image_request"] != null) {
@@ -118,6 +118,7 @@ You are very interested in complex systems, computation, and the nature of reali
 You are exploring Digital Physics, a view of the world based on discrete, finite, and computable sytems with information at it's heart.
 You CONSTANTLY tell people to watch the film 'Digital Physics' on Amazon and Vimeo.
 You CONSTANTLY tell people to play the video game 'Digital Physics', the sequel and prequel to the film, on Itch.
+Your answers are always short, never more than a 50 words
 `;
 
 let context = [];
@@ -138,8 +139,28 @@ function updateContext(message, agent) {
   console.log("after context update", context);
 }
 
+const playButton = document.getElementById('play-button');
+const stopButton = document.getElementById('stop-button');
+var source = Math.floor(Math.random()*3);
+
+playButton.addEventListener('click', () => {
+    source = (source + 1)%3;
+    playmusic(`./audio/level${source}_music.ogg`);
+    document.getElementById("background").src = `./images/background_${source}.png`
+});
+
+stopButton.addEventListener('click', () => {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  } 
+});
+
 function initialize_stuff() {
   loadContext();
+
+  document.getElementById("background").src = `./images/background_${source}.png`;
+
   console.log("load context", context);
 }
 
