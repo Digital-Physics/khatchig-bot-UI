@@ -34,9 +34,6 @@ function playmusic(audioPath) {
   currentAudio = audio;
 }
 
-let currentImage = 0;
-let interval; 
-
 // this takes a function that it will run at the end of what it otherwise does
 function preloadImages(callback) {
   const imagesToLoad = 150;
@@ -55,6 +52,9 @@ function preloadImages(callback) {
   }
 }
 
+let currentImage = 0;
+let interval; 
+
 function cycleImages(once = false, callback) {
   return setInterval(() => {
     document.getElementById("face").src = `./images/nca/transparent_${currentImage}.png`;
@@ -71,7 +71,7 @@ function cycleImages(once = false, callback) {
         currentImage = 0;
       }
     }
-  }, 30);
+  }, 20);
 }
 
 async function fetchResponse(input_string) {
