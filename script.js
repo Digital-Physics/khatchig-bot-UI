@@ -53,7 +53,7 @@ function cycleImages(once = false, callback) {
         currentImage = 1;
       }
     }
-  }, 20);
+  }, 80);
 }
 
 async function fetchResponse(input_string) {
