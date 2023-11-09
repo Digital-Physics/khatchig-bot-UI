@@ -42,7 +42,7 @@ function cycleImages(once = false, callback) {
     document.getElementById("face").src = `./images/nca/transparent_${currentImage}.png`;
     currentImage++;
 
-    if (currentImage > 149) {
+    if (currentImage > 10) {
       if (once) {
         clearInterval(interval);
         currentImage = 0;
@@ -53,7 +53,7 @@ function cycleImages(once = false, callback) {
         currentImage = 1;
       }
     }
-  }, 80);
+  }, 100);
 }
 
 async function fetchResponse(input_string) {
