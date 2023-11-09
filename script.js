@@ -37,12 +37,30 @@ function playmusic(audioPath) {
 let currentImage = 0;
 let interval; 
 
+// this takes a function that it will run at the end of what it otherwise does
+function preloadImages(callback) {
+  const imagesToLoad = 150;
+  let imagesLoaded = 0;
+
+  for (let i = 0; i < imagesToLoad; i++) {
+    const img = new Image();
+    img.src = `./images/nca/transparent_${i}.png`;
+    img.onload = () => {
+      imagesLoaded++;
+      if (imagesLoaded === imagesToLoad) {
+        // All images are loaded, execute the callback
+        callback();
+      }
+    };
+  }
+}
+
 function cycleImages(once = false, callback) {
   return setInterval(() => {
     document.getElementById("face").src = `./images/nca/transparent_${currentImage}.png`;
     currentImage++;
 
-    if (currentImage > 10) {
+    if (currentImage > 149) {
       if (once) {
         clearInterval(interval);
         currentImage = 0;
@@ -50,10 +68,10 @@ function cycleImages(once = false, callback) {
           callback(); // execute the callback if provided
         }
       } else {
-        currentImage = 1;
+        currentImage = 0;
       }
     }
-  }, 100);
+  }, 30);
 }
 
 async function fetchResponse(input_string) {
@@ -179,16 +197,25 @@ stopButton.addEventListener('click', () => {
 });
 
 function initialize_stuff() {
-  loadContext();
-
-  interval = cycleImages(true, () => {
-    // This callback will be executed when the interval is stopped
-    document.getElementById("face").src = "./images/face.png";
+  // preload images takes the function you want to run at the tail end. this one takes nothing and then cycles images
+  preloadImages(() => {
+    // All necessary images are preloaded, start the animation
+    interval = cycleImages(true, () => {
+      // This callback will be executed when the interval is stopped
+      document.getElementById("face").src = "./images/face.png";
+    });
   });
 
-  document.getElementById("background").src = `./images/background_${source}.png`;
+  loadContext();
 
-  console.log("load context", context);
+  // interval = cycleImages(true, () => {
+  //   // This callback will be executed when the interval is stopped
+  //   document.getElementById("face").src = "./images/face.png";
+  // });
+
+  // document.getElementById("background").src = `./images/background_${source}.png`;
+
+  // console.log("load context", context);
 }
 
 // we should store our individual user's conversation on the client side and send it to the server thread locally and initialize it
