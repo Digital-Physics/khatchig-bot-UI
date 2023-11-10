@@ -77,11 +77,11 @@ function cycleImages(once = false, callback) {
 async function fetchResponse(input_string) {
 
   // sets interval var to this function that that if it takes in nothing, just continues to run this function asynchrously with other stuff, i think
-  // interval = cycleImages();
-  preloadImages(() => {
-    // Preloading again?
-    interval = cycleImages();
-  });
+  interval = cycleImages();
+  // preloadImages(() => {
+  //   // Preloading again?
+  //   interval = cycleImages();
+  // });
 
   try {
     // const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
@@ -121,16 +121,16 @@ function updateQuestion() {
   document.getElementById("input-box").value = "";
   document.getElementById("answer").innerHTML = "";
 
-  console.log("context before user update", context);
+  // console.log("context before user update", context);
   updateContext(inputText, "user");
-  console.log("context after user update", context);
+  // console.log("context after user update", context);
 
   // we stringify to send a string and then use encode URI component to avoid "?" in dictionary values issues
   fetchResponse(encodeURIComponent(JSON.stringify(context))).then((response) => {
-    console.log("response b4 update:", response);
-    console.log("context b4 assistant update:", context);
+    // console.log("response b4 update:", response);
+    // console.log("context b4 assistant update:", context);
     updateContext(response, "assistant");
-    console.log("context after assistant update:", context);
+    // console.log("context after assistant update:", context);
     document.getElementById("answer").innerHTML = response;
     return response;
   }).catch((error) => {
@@ -180,7 +180,7 @@ function updateContext(message, agent) {
   }
   // append a new object to the list
   context.push({"role": agent, "content": message});
-  console.log("after context update", context);
+  // console.log("after context update", context);
 }
 
 const playButton = document.getElementById('play-button');
@@ -207,6 +207,7 @@ function initialize_stuff() {
     interval = cycleImages(true, () => {
       // This callback will be executed when the interval is stopped
       document.getElementById("face").src = "./images/face.png";
+      document.getElementById("answer").innerHTML = "Welcome 🙏🧠👾☯️❤️🤖🛸✨";
     });
   });
 
