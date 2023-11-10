@@ -77,11 +77,11 @@ function cycleImages(once = false, callback) {
 async function fetchResponse(input_string) {
 
   // sets interval var to this function that that if it takes in nothing, just continues to run this function asynchrously with other stuff, i think
-  interval = cycleImages();
-  // preloadImages(() => {
-  //   // Preloading again?
-  //   interval = cycleImages();
-  // });
+  // interval = cycleImages();
+  preloadImages(() => {
+    // Preloading again?
+    interval = cycleImages();
+  });
 
   try {
     // const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
