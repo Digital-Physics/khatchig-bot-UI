@@ -113,7 +113,8 @@ async function fetchResponse(input_string) {
     console.error(error);
     clearInterval(interval);
     interval = null;
-    document.getElementById("face").src = "./images/face.png";
+    document.getElementById("face").style.display = "block";
+    // document.getElementById("face").src = "./images/face.png";
     throw error;
   }
 
@@ -205,13 +206,14 @@ stopButton.addEventListener('click', () => {
 });
 
 function initialize_stuff() {
+  document.getElementById("face").style.display = "none";
   // preload images takes the function you want to run at the tail end. this one takes nothing and then cycles images
   preloadImages(() => {
     // All necessary images are preloaded, start the animation
     interval = cycleImages(true, () => {
       // This callback will be executed when the interval is stopped
-      // document.getElementById("face").style.display = "block";
-      document.getElementById("face").src = "./images/face.png";
+      document.getElementById("face").style.display = "block";
+      // document.getElementById("face").src = "./images/face.png";
       document.getElementById("answer").innerHTML = "Welcome 🙏🧠👾☯️❤️🤖🛸✨";
     });
   });
