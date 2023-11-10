@@ -52,6 +52,23 @@ function preloadImages(callback) {
   }
 }
 
+function preloadBgImages(callback) {
+  const imagesToLoad = 140;
+  let imagesLoaded = 0;
+
+  for (let i = 0; i < imagesToLoad; i++) {
+    const img = new Image();
+    img.src = `./images/bg${source}/${i}.png`;
+    img.onload = () => {
+      imagesLoaded++;
+      if (imagesLoaded === imagesToLoad) {
+        // All images are loaded, execute the callback
+        callback();
+      }
+    };
+  }
+}
+
 let currentImage = 0;
 let interval; 
 
@@ -115,8 +132,8 @@ async function fetchResponse(input_string) {
   });
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
-    // const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
+    // const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
+    const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
     const output = await response.json();
 
     clearInterval(interval);
@@ -224,7 +241,7 @@ var source = Math.floor(Math.random()*3);
 playButton.addEventListener('click', () => {
     source = (source + 1)%3;
     playmusic(`./audio/level${source}_music.ogg`);
-    runBgLoop(0);
+    preloadBgImages(runBgLoop(0));
     // document.getElementById("background").src = `./images/background_${source}.png`
 });
 
@@ -261,7 +278,7 @@ function initialize_stuff() {
     interval = cycleImages(true, () => {
       // This callback will be executed when the interval is stopped
       // document.getElementById("face").style.display = "block";
-      runLoop(0);
+      preloadImages(runLoop(0));
       
       document.getElementById("face").src = "./images/face.png";
       document.getElementById("answer").innerHTML = "Welcome 🙏🧠👾☯️❤️🤖🛸✨";
