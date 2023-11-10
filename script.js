@@ -78,7 +78,7 @@ function cycleImages(once = false, callback) {
 }
 
 async function fetchResponse(input_string) {
-  document.getElementById("face").removeAttribute("src");
+  document.getElementById("face").style.display = "none";
 
   // sets interval var to this function that that if it takes in nothing, just continues to run this function asynchrously with other stuff, i think
   // interval = cycleImages();
@@ -96,7 +96,7 @@ async function fetchResponse(input_string) {
     currentImage = 0;
     interval = null;
 
-    document.getElementById("face").src = "./images/face.png";
+    document.getElementById("face").style.display = "block";
 
     // console.log("output:", output);
     // non-functioning code while json response is null on these fields
@@ -205,12 +205,12 @@ stopButton.addEventListener('click', () => {
 });
 
 function initialize_stuff() {
-  document.getElementById("face").removeAttribute("src");
   // preload images takes the function you want to run at the tail end. this one takes nothing and then cycles images
   preloadImages(() => {
     // All necessary images are preloaded, start the animation
     interval = cycleImages(true, () => {
       // This callback will be executed when the interval is stopped
+      // document.getElementById("face").style.display = "block";
       document.getElementById("face").src = "./images/face.png";
       document.getElementById("answer").innerHTML = "Welcome 🙏🧠👾☯️❤️🤖🛸✨";
     });
