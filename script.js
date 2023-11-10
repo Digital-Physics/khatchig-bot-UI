@@ -77,6 +77,33 @@ function cycleImages(once = false, callback) {
   }, 20);
 }
 
+// let currentBgImage = 0;
+// let direction = true;
+
+// cycleBackground = setInterval(() => {
+//   document.getElementById("background").src = `./images/bg${source}/${currentBgImage}.png`;
+//   if (direction) {
+//     currentBgImage++;
+//   } else {
+//     currentBgImage--;
+//   }
+
+//   if (currentBgImage < 1 || currentBgImage > 138) {
+//     direction = !direction;
+//   }
+// }, 100);
+
+function runBgLoop(i) {
+  setTimeout(function () {
+      document.getElementById("background").src = `./images/bg${source}/${i}.png`;
+      i++;
+      // Check if the loop should continue
+      if (i < 139) {
+          runBgLoop(i);
+      }
+  }, 50);
+}
+
 async function fetchResponse(input_string) {
   // document.getElementById("face").style.display = "none";
 
@@ -88,13 +115,15 @@ async function fetchResponse(input_string) {
   });
 
   try {
-    // const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
-    const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
+    const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
+    // const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
     const output = await response.json();
 
     clearInterval(interval);
     currentImage = 0;
     interval = null;
+
+    runLoop(4);
 
     document.getElementById("face").src = "./images/face.png";
 
@@ -164,7 +193,7 @@ let persona = `
 Your name is Khatchig.
 You are very interested in complex systems, computation, and the nature of reality.
 You are exploring Digital Physics, a view of the world based on discrete, finite, and computable sytems with information at it's heart.
-You CONSTANTLY tell people to watch the film 'Digital Physics' on Amazon Prime Video by clicking the 🍿.
+You CONSTANTLY tell people to watch the film 'Digital Physics' on Amazon by clicking the 🍿.
 You CONSTANTLY tell people to play the video game 'Digital Physics', the sequel and prequel to the film, on Itch by clicking the 🕹️.
 You CONSTANTLY tell people to leave a comment or review on 'Digital Physics' because you read all of them.
 Your answers are ALWAYS concise!
@@ -195,7 +224,8 @@ var source = Math.floor(Math.random()*3);
 playButton.addEventListener('click', () => {
     source = (source + 1)%3;
     playmusic(`./audio/level${source}_music.ogg`);
-    document.getElementById("background").src = `./images/background_${source}.png`
+    runBgLoop(0);
+    // document.getElementById("background").src = `./images/background_${source}.png`
 });
 
 stopButton.addEventListener('click', () => {
@@ -205,6 +235,24 @@ stopButton.addEventListener('click', () => {
   } 
 });
 
+function runLoop(i) {
+  setTimeout(function () {
+      if (i % 2 == 0) {
+          document.getElementById("face").src = "./images/face2.png";
+      } else {
+          document.getElementById("face").src = "./images/face.png";
+      }
+
+      // Continue the loop
+      i++;
+
+      // Check if the loop should continue
+      if (i < 10) {
+          runLoop(i);
+      }
+  }, 100); // 20 milliseconds delay
+}
+
 function initialize_stuff() {
   // document.getElementById("face").style.display = "none";
   // preload images takes the function you want to run at the tail end. this one takes nothing and then cycles images
@@ -213,6 +261,8 @@ function initialize_stuff() {
     interval = cycleImages(true, () => {
       // This callback will be executed when the interval is stopped
       // document.getElementById("face").style.display = "block";
+      runLoop(0);
+      
       document.getElementById("face").src = "./images/face.png";
       document.getElementById("answer").innerHTML = "Welcome 🙏🧠👾☯️❤️🤖🛸✨";
     });
