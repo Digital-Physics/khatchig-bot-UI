@@ -55,6 +55,9 @@ function preloadImages(callback) {
 let currentImage = 0;
 let interval; 
 
+// double protection
+// animation_complete = false;
+
 function cycleImages(once = false, callback) {
   return setInterval(() => {
     document.getElementById("face").src = `./images/nca/transparent_${currentImage}.png`;
@@ -75,6 +78,7 @@ function cycleImages(once = false, callback) {
 }
 
 async function fetchResponse(input_string) {
+  document.getElementById("face").src = "";
 
   // sets interval var to this function that that if it takes in nothing, just continues to run this function asynchrously with other stuff, i think
   // interval = cycleImages();
@@ -201,6 +205,7 @@ stopButton.addEventListener('click', () => {
 });
 
 function initialize_stuff() {
+  document.getElementById("face").src = "";
   // preload images takes the function you want to run at the tail end. this one takes nothing and then cycles images
   preloadImages(() => {
     // All necessary images are preloaded, start the animation
@@ -212,15 +217,6 @@ function initialize_stuff() {
   });
 
   loadContext();
-
-  // interval = cycleImages(true, () => {
-  //   // This callback will be executed when the interval is stopped
-  //   document.getElementById("face").src = "./images/face.png";
-  // });
-
-  // document.getElementById("background").src = `./images/background_${source}.png`;
-
-  // console.log("load context", context);
 }
 
 // we should store our individual user's conversation on the client side and send it to the server thread locally and initialize it
