@@ -236,7 +236,8 @@ function updateContext(message, agent) {
 
 const playButton = document.getElementById('play-button');
 const stopButton = document.getElementById('stop-button');
-var source = Math.floor(Math.random()*3);
+// var source = Math.floor(Math.random()*3);
+var source = 0;
 
 playButton.addEventListener('click', () => {
     source = (source + 1)%3;
