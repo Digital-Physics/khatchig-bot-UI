@@ -52,6 +52,26 @@ function preloadImages(callback) {
   }
 }
 
+function preloadFaceImages(callback) {
+  const img1 = new Image();
+  img1.src = "./images/face.png";
+
+  const img2 = new Image();
+  img2.src = "./images/face2.png";
+
+  // Using the onload event for each image to track when they are both loaded
+  let loadedImages = 0;
+
+  img1.onload = img2.onload = () => {
+    loadedImages++;
+
+    if (loadedImages === 2) {
+      // Both images are loaded, execute the callback
+      callback();
+    }
+  };
+}
+
 function preloadBgImages(callback) {
   const imagesToLoad = 140;
   let imagesLoaded = 0;
@@ -279,7 +299,7 @@ function initialize_stuff() {
     interval = cycleImages(true, () => {
       // This callback will be executed when the interval is stopped
       // document.getElementById("face").style.display = "block";
-      preloadImages(runLoop(0));
+      preloadFaceImages(runLoop(0));
       
       document.getElementById("face").src = "./images/face.png";
       document.getElementById("answer").innerHTML = "Welcome 🙏🧠👾☯️❤️🤖🛸✨";
