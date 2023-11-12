@@ -34,42 +34,71 @@ function playmusic(audioPath) {
   currentAudio = audio;
 }
 
-// this takes a function that it will run at the end of what it otherwise does
+// // this takes a function that it will run at the end of what it otherwise does
+// function preloadImages(callback) {
+//   const imagesToLoad = 150;
+//   let imagesLoaded = 0;
+
+//   for (let i = 0; i < imagesToLoad; i++) {
+//     const img = new Image();
+//     img.src = `./images/nca/transparent_${i}.png`;
+//     img.onload = () => {
+//       imagesLoaded++;
+//       if (imagesLoaded === imagesToLoad) {
+//         // All images are loaded, execute the callback
+//         callback();
+//       }
+//     };
+//   }
+// }
+
+// function preloadFaceImages(callback) {
+//   const img1 = new Image();
+//   img1.src = "./images/face.png";
+
+//   const img2 = new Image();
+//   img2.src = "./images/face2.png";
+
+//   // Using the onload event for each image to track when they are both loaded
+//   let loadedImages = 0;
+
+//   img1.onload = img2.onload = () => {
+//     loadedImages++;
+
+//     if (loadedImages === 2) {
+//       // Both images are loaded, execute the callback
+//       callback();
+//     }
+//   };
+// }
+
 function preloadImages(callback) {
-  const imagesToLoad = 150;
+  const ncaImagesToLoad = 150;
+  const faceImageSources = ["./images/face.png", "./images/face2.png"];
+  const totalImagesToLoad = ncaImagesToLoad + faceImageSources.length;
   let imagesLoaded = 0;
 
-  for (let i = 0; i < imagesToLoad; i++) {
-    const img = new Image();
-    img.src = `./images/nca/transparent_${i}.png`;
-    img.onload = () => {
-      imagesLoaded++;
-      if (imagesLoaded === imagesToLoad) {
-        // All images are loaded, execute the callback
-        callback();
-      }
-    };
-  }
-}
-
-function preloadFaceImages(callback) {
-  const img1 = new Image();
-  img1.src = "./images/face.png";
-
-  const img2 = new Image();
-  img2.src = "./images/face2.png";
-
-  // Using the onload event for each image to track when they are both loaded
-  let loadedImages = 0;
-
-  img1.onload = img2.onload = () => {
-    loadedImages++;
-
-    if (loadedImages === 2) {
-      // Both images are loaded, execute the callback
+  function checkAllImagesLoaded() {
+    imagesLoaded++;
+    if (imagesLoaded === totalImagesToLoad) {
+      // All images are loaded, execute the callback
       callback();
     }
-  };
+  }
+
+  // Preload NCA images
+  for (let i = 0; i < ncaImagesToLoad; i++) {
+    const img = new Image();
+    img.src = `./images/nca/transparent_${i}.png`;
+    img.onload = checkAllImagesLoaded;
+  }
+
+  // Preload face images
+  faceImageSources.forEach((src) => {
+    const img = new Image();
+    img.src = src;
+    img.onload = checkAllImagesLoaded;
+  });
 }
 
 function preloadBgImages(callback) {
@@ -145,11 +174,11 @@ async function fetchResponse(input_string) {
   // document.getElementById("face").style.display = "none";
 
   // sets interval var to this function that that if it takes in nothing, just continues to run this function asynchrously with other stuff, i think
-  // interval = cycleImages();
-  preloadImages(() => {
-    // Preloading again?
-    interval = cycleImages();
-  });
+  interval = cycleImages();
+  // preloadImages(() => {
+  //   // Preloading again?
+  //   interval = cycleImages();
+  // });
 
   try {
     // const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
@@ -299,7 +328,8 @@ function initialize_stuff() {
     interval = cycleImages(true, () => {
       // This callback will be executed when the interval is stopped
       // document.getElementById("face").style.display = "block";
-      preloadFaceImages(runLoop(0));
+      // preloadFaceImages(runLoop(0));
+      runLoop(0);
       
       document.getElementById("face").src = "./images/face.png";
       document.getElementById("answer").innerHTML = "Welcome 🙏🧠👾☯️❤️🤖🛸✨";
