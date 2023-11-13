@@ -34,44 +34,6 @@ function playmusic(audioPath) {
   currentAudio = audio;
 }
 
-// // this takes a function that it will run at the end of what it otherwise does
-// function preloadImages(callback) {
-//   const imagesToLoad = 150;
-//   let imagesLoaded = 0;
-
-//   for (let i = 0; i < imagesToLoad; i++) {
-//     const img = new Image();
-//     img.src = `./images/nca/transparent_${i}.png`;
-//     img.onload = () => {
-//       imagesLoaded++;
-//       if (imagesLoaded === imagesToLoad) {
-//         // All images are loaded, execute the callback
-//         callback();
-//       }
-//     };
-//   }
-// }
-
-// function preloadFaceImages(callback) {
-//   const img1 = new Image();
-//   img1.src = "./images/face.png";
-
-//   const img2 = new Image();
-//   img2.src = "./images/face2.png";
-
-//   // Using the onload event for each image to track when they are both loaded
-//   let loadedImages = 0;
-
-//   img1.onload = img2.onload = () => {
-//     loadedImages++;
-
-//     if (loadedImages === 2) {
-//       // Both images are loaded, execute the callback
-//       callback();
-//     }
-//   };
-// }
-
 function preloadImages(callback) {
   const ncaImagesToLoad = 150;
   const faceImageSources = ["./images/face.png", "./images/face2.png", "./images/face/0.png", "./images/face/1.png", "./images/face/2.png", "./images/face/3.png"];
@@ -112,7 +74,7 @@ function preloadBgImages(callback) {
       imagesLoaded++;
       if (imagesLoaded === imagesToLoad) {
         // All images are loaded, execute the callback
-        callback();
+        callback(0);
       }
     };
   }
@@ -122,6 +84,7 @@ let currentImage = 0;
 let currentFaceImage = 0;
 let interval; 
 let interval2;
+let transitionComplete = true;
 
 // double protection
 // animation_complete = false;
@@ -156,22 +119,6 @@ function cycleFaceImages() {
   }, 500);
 }
 
-// let currentBgImage = 0;
-// let direction = true;
-
-// cycleBackground = setInterval(() => {
-//   document.getElementById("background").src = `./images/bg${source}/${currentBgImage}.png`;
-//   if (direction) {
-//     currentBgImage++;
-//   } else {
-//     currentBgImage--;
-//   }
-
-//   if (currentBgImage < 1 || currentBgImage > 138) {
-//     direction = !direction;
-//   }
-// }, 100);
-
 function runBgLoop(i) {
   setTimeout(function () {
       document.getElementById("background").src = `./images/bg${source}/${i}.png`;
@@ -179,7 +126,10 @@ function runBgLoop(i) {
       // Check if the loop should continue
       if (i < 139) {
           runBgLoop(i);
-      }
+      } else {
+        transitionComplete = true;
+        // console.log("transition flipped back", transitionComplete);
+      } 
   }, 50);
 }
 
@@ -306,10 +256,13 @@ const stopButton = document.getElementById('stop-button');
 var source = 0;
 
 playButton.addEventListener('click', () => {
+  if (transitionComplete) {
     source = (source + 1)%3;
     playmusic(`./audio/level${source}_music.ogg`);
-    preloadBgImages(runBgLoop(0));
-    // document.getElementById("background").src = `./images/background_${source}.png`
+    transitionComplete = false;
+    // preloadBgImages(runBgLoop(0));
+    preloadBgImages(runBgLoop);
+    }    
 });
 
 stopButton.addEventListener('click', () => {

@@ -41,6 +41,10 @@ body {
   color: rgb(210, 213, 218);
   background-color: rgb(52, 53, 64);
   border-radius: 5px 5px 5px 5px;
+  position: relative;
+  flex-direction: column;
+  flex-grow: 1; 
+  overflow: auto; 
 }
 
 #answer {
@@ -48,7 +52,6 @@ body {
   margin-top: 5px;
   min-height: 30px;
   max-height: 150px;
-  /* max-height: 150px; */
   width: 80%; 
   display: flex; 
   align-items: center;
@@ -57,19 +60,6 @@ body {
   background-color: rgb(68, 70, 83);
   border-radius: 5px;
   position: relative;
-  /* overflow: hidden; */
-  /* height: 90%; */
-  /* min-width: 200px; */
-  /* display: flex; */
-  /* align-items: center;  */
-  /* padding: 5px; */
-  /* color: rgb(210, 213, 218); */
-  /* top: 0; */
-  /* margin-top: 5px; */
-  /* margin-bottom: 5px; */
-  /* background-color: rgb(52, 53, 64); */
-  /* background-color: rgb(32, 33, 35); */
-  /* border-radius: 5px; */
   flex-direction: column;
   flex-grow: 1; 
   overflow: auto; 
