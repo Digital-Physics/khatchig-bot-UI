@@ -74,7 +74,7 @@ function playmusic(audioPath) {
 
 function preloadImages(callback) {
   const ncaImagesToLoad = 150;
-  const faceImageSources = ["./images/face.png", "./images/face2.png"];
+  const faceImageSources = ["./images/face.png", "./images/face2.png", "./images/face/0.png", "./images/face/1.png", "./images/face/2.png", "./images/face/3.png"];
   const totalImagesToLoad = ncaImagesToLoad + faceImageSources.length;
   let imagesLoaded = 0;
 
@@ -119,12 +119,14 @@ function preloadBgImages(callback) {
 }
 
 let currentImage = 0;
+let currentFaceImage = 0;
 let interval; 
+let interval2;
 
 // double protection
 // animation_complete = false;
 
-function cycleImages(once = false, callback) {
+function cycleNcaImages(once = false, callback) {
   return setInterval(() => {
     document.getElementById("face").src = `./images/nca/transparent_${currentImage}.png`;
     currentImage++;
@@ -141,6 +143,17 @@ function cycleImages(once = false, callback) {
       }
     }
   }, 20);
+}
+
+function cycleFaceImages() {
+  return setInterval(() => {
+    document.getElementById("face").src = `./images/face/${currentFaceImage}.png`;
+    currentFaceImage++;
+
+    if (currentFaceImage > 3) {
+        currentFaceImage = 0;
+      }
+  }, 500);
 }
 
 // let currentBgImage = 0;
@@ -172,12 +185,15 @@ function runBgLoop(i) {
 
 async function fetchResponse(input_string) {
   // document.getElementById("face").style.display = "none";
+  clearInterval(interval2);
+  currentFaceImage = 0;
+  interval2 = null;
 
   // sets interval var to this function that that if it takes in nothing, just continues to run this function asynchrously with other stuff, i think
-  interval = cycleImages();
+  interval = cycleNcaImages();
   // preloadImages(() => {
   //   // Preloading again?
-  //   interval = cycleImages();
+  //   interval = cycleNcaImages();
   // });
 
   try {
@@ -191,7 +207,8 @@ async function fetchResponse(input_string) {
 
     runLoop(4);
 
-    document.getElementById("face").src = "./images/face.png";
+    // document.getElementById("face").src = "./images/face.png";
+    interval2 = cycleFaceImages();
 
     // console.log("output:", output);
     // non-functioning code while json response is null on these fields
@@ -262,7 +279,7 @@ You are exploring Digital Physics, a view of the world based on discrete, finite
 You CONSTANTLY tell people to watch the film 'Digital Physics' on Amazon by clicking the 🍿.
 You CONSTANTLY tell people to play the video game 'Digital Physics', the sequel and prequel to the film, on Itch by clicking the 🕹️.
 You CONSTANTLY tell people to leave a comment or review on 'Digital Physics' because you read all of them.
-Your answers are ALWAYS concise!
+You are ALWAYS concise, NEVER saying more than 50 words.
 `;
 
 let context = [];
@@ -325,13 +342,14 @@ function initialize_stuff() {
   // preload images takes the function you want to run at the tail end. this one takes nothing and then cycles images
   preloadImages(() => {
     // All necessary images are preloaded, start the animation
-    interval = cycleImages(true, () => {
+    interval = cycleNcaImages(true, () => {
       // This callback will be executed when the interval is stopped
       // document.getElementById("face").style.display = "block";
       // preloadFaceImages(runLoop(0));
       runLoop(0);
       
-      document.getElementById("face").src = "./images/face.png";
+      // document.getElementById("face").src = "./images/face.png";
+      interval2 = cycleFaceImages();
       document.getElementById("answer").innerHTML = "Welcome 🙏🧠👾☯️❤️🤖🛸✨";
     });
   });
