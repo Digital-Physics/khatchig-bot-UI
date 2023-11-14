@@ -108,7 +108,7 @@ function cycleNcaImages(once = false, callback) {
   }, 20);
 }
 
-function cycleFaceImages() {
+function cycleFlickerImages() {
   return setInterval(() => {
     document.getElementById("face").src = `./images/face/${currentFaceImage}.png`;
     currentFaceImage++;
@@ -155,10 +155,10 @@ async function fetchResponse(input_string) {
     currentImage = 0;
     interval = null;
 
-    runLoop(4);
+    faceFlipLoop(4);
 
     // document.getElementById("face").src = "./images/face.png";
-    interval2 = cycleFaceImages();
+    interval2 = cycleFlickerImages();
 
     // console.log("output:", output);
     // non-functioning code while json response is null on these fields
@@ -175,8 +175,7 @@ async function fetchResponse(input_string) {
     console.error(error);
     clearInterval(interval);
     interval = null;
-    // document.getElementById("face").style.display = "block";
-    document.getElementById("face").src = "./images/face.png";
+    interval2 = cycleFlickerImages();
     throw error;
   }
 
@@ -260,7 +259,17 @@ playButton.addEventListener('click', () => {
     source = (source + 1)%3;
     playmusic(`./audio/level${source}_music.ogg`);
     transitionComplete = false;
-    // preloadBgImages(runBgLoop(0));
+
+    // need to stop this animation or we'll have competing asynchronous image updates
+    clearInterval(interval2);
+    currentFaceImage = 0;
+    interval2 = null;
+
+    interval = cycleNcaImages(true, () => {
+      // This callback function (with argument 0) will be executed when the interval is stopped
+      faceFlipLoop(0);
+      interval2 = cycleFlickerImages();
+    });
     preloadBgImages(runBgLoop);
     }    
 });
@@ -272,7 +281,7 @@ stopButton.addEventListener('click', () => {
   } 
 });
 
-function runLoop(i) {
+function faceFlipLoop(i) {
   setTimeout(function () {
       if (i % 2 == 0) {
           document.getElementById("face").src = "./images/face2.png";
@@ -285,24 +294,21 @@ function runLoop(i) {
 
       // Check if the loop should continue
       if (i < 10) {
-          runLoop(i);
+          faceFlipLoop(i);
       }
-  }, 100); // 20 milliseconds delay
+  }, 100); // milliseconds delay
 }
 
 function initialize_stuff() {
   // document.getElementById("face").style.display = "none";
-  // preload images takes the function you want to run at the tail end. this one takes nothing and then cycles images
+  // preload images takes this callback function that runs at the tail end of the preloadImages process. 
+  // this callback assigns a global var to the cycle image
   preloadImages(() => {
     // All necessary images are preloaded, start the animation
     interval = cycleNcaImages(true, () => {
-      // This callback will be executed when the interval is stopped
-      // document.getElementById("face").style.display = "block";
-      // preloadFaceImages(runLoop(0));
-      runLoop(0);
-      
-      // document.getElementById("face").src = "./images/face.png";
-      interval2 = cycleFaceImages();
+      // This callback function (with argument 0) will be executed when the interval is stopped
+      faceFlipLoop(0);
+      interval2 = cycleFlickerImages();
       document.getElementById("answer").innerHTML = "Welcome 🙏🧠👾☯️❤️🤖🛸✨";
     });
   });
