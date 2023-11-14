@@ -50,6 +50,7 @@ body {
 #answer {
   height: auto; 
   margin-top: 5px;
+  margin-bottom: 5px;
   min-height: 30px;
   max-height: 150px;
   width: 80%; 
