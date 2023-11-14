@@ -265,12 +265,13 @@ playButton.addEventListener('click', () => {
     currentFaceImage = 0;
     interval2 = null;
 
+    preloadBgImages(runBgLoop);
+
     interval = cycleNcaImages(true, () => {
       // This callback function (with argument 0) will be executed when the interval is stopped
       faceFlipLoop(0);
       interval2 = cycleFlickerImages();
     });
-    preloadBgImages(runBgLoop);
     }    
 });
 
