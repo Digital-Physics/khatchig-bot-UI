@@ -211,7 +211,13 @@ nav {
   flex-shrink: 0;
 }
 
-.parent {
+/* .parent {
+  position: relative;
+  width: 163px;
+  height: 163px;
+} */
+
+#animationCanvas {
   position: relative;
   width: 163px;
   height: 163px;
