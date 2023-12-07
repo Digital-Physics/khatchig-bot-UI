@@ -128,16 +128,6 @@ body {
   text-decoration-color: rgb(24, 153, 12); 
 }
 
-/* #output-text {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #313131;
-  font-family: Arial, sans-serif;
-  z-index: 1;
-} */
-
 nav {
   width: 50px;
   float: left;
@@ -185,11 +175,6 @@ nav {
   text-decoration: none;
   color: rgb(210, 213, 218);;
 }
-/* 
-.form-element {
-  padding: 5px; 
-  margin-bottom: 10px;
-} */
 
 #progress {
   width: 100%;
@@ -211,16 +196,11 @@ nav {
   flex-shrink: 0;
 }
 
-/* .parent {
+#imageCanvas {
   position: relative;
-  width: 163px;
-  height: 163px;
-} */
-
-#animationCanvas {
-  position: relative;
-  width: 163px;
-  height: 163px;
+  image-rendering: pixelated;
+  width: 192px;
+  height: 192px;
 }
 
 .image-overlay {
