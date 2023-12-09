@@ -5,7 +5,7 @@ const menu = document.querySelector('.menu');
 // websocket
 // const socket = new WebSocket("ws://127.0.0.1:8000/ws");
 // const socket = new WebSocket("ws:https://khatchig.onrender.com:10000/ws");
-const socket = new WebSocket("wss:https://khatchig.onrender.com/ws");
+const socket = new WebSocket("wss://khatchig.onrender.com/ws");
 
 // image canvas
 const canvas2 = document.getElementById("imageCanvas");
