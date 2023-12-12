@@ -203,6 +203,13 @@ nav {
   height: 192px;
 }
 
+#testCanvas {
+  position: relative;
+  image-rendering: pixelated;
+  width: 192px;
+  height: 192px;
+}
+
 .image-overlay {
   position: absolute;
   top: 0;
