@@ -192,27 +192,17 @@ canvas2.addEventListener("click", (event) => {
 
 // EventHandler is called when the client gets a message through the websocket from the server, which is very often
 socket.onmessage = (event) => {
-  console.log("another");
+  // console.log("+1");
   const result = JSON.parse(event.data);
 
-  const jpgBytesBase64 = result.image; // base64 string
-  const jpgBytes = Uint8Array.from(atob(jpgBytesBase64), c => c.charCodeAt(0)); // decode base64
-  // const jpegBytes = new Uint8Array(event.data["image"]); 
-  // const img = new Image();
-  // // img.crossOrigin = "";
-  // img.src = URL.createObjectURL(new Blob([jpgBytes]));
-  // const blob = new Blob([jpgBytes], { type: 'image/jpeg' });
-  const blob = new Blob([jpgBytes]);
-  const img = new Image();
-  
   document.getElementById("answer").innerHTML = result["dialogue"];
 
-  // const uint8Array = new Uint8ClampedArray(result["image"]);
+  const uint8Array = new Uint8ClampedArray(result["image"]);
   // console.log("length of flattened", uint8Array.length);
 
   // Calculate the sum of all elements in the Uint8ClampedArray; we use all 0s to be a flag
   // const sum = uint8Array.reduce((acc, value) => acc + value, 0);
-  const sum = 1
+  const sum = 1;
 
   var bgImg2 = new Image();
   bgImg2.src = `./images/bg${level}/${currBgImg}.png`;
@@ -223,37 +213,15 @@ socket.onmessage = (event) => {
   } else {  
     // Create a new canvas element to store the scaled image
     const scaledCanvas = document.createElement('canvas');
-    const scaledCtx = scaledCanvas.getContext('2d');
     scaledCanvas.width = 192;
     scaledCanvas.height = 192;
-    
-    const testCanvas = document.getElementById("testCanvas");
-    const testCtx = testCanvas.getContext('2d');
+    const scaledCtx = scaledCanvas.getContext('2d');
 
     // Use nearest-neighbor interpolation for pixelation
     scaledCtx.imageSmoothingEnabled = false;
     // Put your original 32x32 image data onto the scaled canvas
-    // scaledCtx.putImageData(new ImageData(uint8Array, 32, 32), 0, 0);
-    // scaledCtx.putImageData(new ImageData(jpegBytes, 32, 32), 0, 0);
+    scaledCtx.putImageData(new ImageData(uint8Array, 32, 32), 0, 0);
 
-    
-    // img.crossOrigin = "";
-    img.src = URL.createObjectURL(new Blob([jpgBytes]));
-    img.onload = () => {
-      // scaledCtx.putImageData(img, 0, 0);
-      // resized_image = img.resize((192, 192))
-      testCtx.drawImage(img, 0, 0, 192, 192);
-      // console.log("draw img");
-      scaledCtx.drawImage(img, 0, 0);
-      // const imageData = testCtx.getImageData(0, 0, 32, 32);
-      // console.log(typeof(imageData), "typeof()")
-      // scaledCtx.putImageData(new ImageData(imageData, 32, 32), 0, 0);
-      // img.src = URL.createObjectURL(blob);
-    };
-
-    // console.log("bytes", jpgBytes.length); // Expect ~700-900 bytes 
-    // console.log("img.width, img.height", img.width, img.height); // Expect 32x32
-    
     ctx2.imageSmoothingEnabled = false;
 
     // Draw the scaled image onto the main canvas using drawImage
