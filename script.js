@@ -260,9 +260,9 @@ stopButton.addEventListener('click', () => {
 });
 
 menuToggle.addEventListener('click', toggleMenu);
-menuToggle.addEventListener('touchstart', toggleMenu);
+// menuToggle.addEventListener('touchstart', toggleMenu);
 document.addEventListener('click', closeMenu);
-document.addEventListener('touchstart', closeMenu);
+// document.addEventListener('touchstart', closeMenu);
 
 // we should store our individual user's conversation on the client side and send it to the server thread locally and initialize it
 document.addEventListener('DOMContentLoaded', initialize_stuff);

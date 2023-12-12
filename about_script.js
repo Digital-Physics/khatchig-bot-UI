@@ -3,9 +3,9 @@ const menuToggle = document.querySelector('.menu-toggle');
 const menu = document.querySelector('.menu');
 
 menuToggle.addEventListener('click', toggleMenu);
-menuToggle.addEventListener('touchstart', toggleMenu);
+// menuToggle.addEventListener('touchstart', toggleMenu);
 document.addEventListener('click', closeMenu);
-document.addEventListener('touchstart', closeMenu);
+// document.addEventListener('touchstart', closeMenu);
 
 function toggleMenu(e) {
   e.stopPropagation();
@@ -18,6 +18,4 @@ function closeMenu(e) {
     menu.classList.remove('show');
   }
 }
-
-// rest of code
 

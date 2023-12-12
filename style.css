@@ -250,5 +250,26 @@ nav {
 }
 
 #innerbox .h5-container {
-  margin-top: 20px;
+  margin-top: 0px;
+}
+
+#about {
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+.connected {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#space {
+  margin-bottom: 20px;
+}
+
+#nca-gif {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
