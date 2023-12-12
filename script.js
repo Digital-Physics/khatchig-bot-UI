@@ -192,6 +192,7 @@ canvas2.addEventListener("click", (event) => {
 
 // EventHandler is called when the client gets a message through the websocket from the server, which is very often
 socket.onmessage = (event) => {
+  console.log("another");
   const result = JSON.parse(event.data);
 
   const jpgBytesBase64 = result.image; // base64 string
