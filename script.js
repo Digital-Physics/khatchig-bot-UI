@@ -156,16 +156,16 @@ function toggleImage() {
     currentImage = currentImage === faceImg1 ? faceImg2 : faceImg1;
 
     // Redraw the current image on the canvas
-    // ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+    ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
     ctx2.drawImage(currentImage, -8, -2, canvas2.width, canvas2.height);
   } else {
+    ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
     ctx2.drawImage(currentImage, -8, -2, canvas2.width, canvas2.height);
   }
 }
 
 // any future initializition stuff can be put in here, although a lot is handled outside
 function initialize_stuff() {
-  document.getElementById("answer").innerHTML = "Welcome 🙏🧠👾☯️❤️🤖🛸✨";
 }
 
 // Event Listeners
@@ -201,12 +201,12 @@ socket.onmessage = (event) => {
   // console.log("length of flattened", uint8Array.length);
 
   // Calculate the sum of all elements in the Uint8ClampedArray; we use all 0s to be a flag
-  // const sum = uint8Array.reduce((acc, value) => acc + value, 0);
-  const sum = 1;
+  const sum = uint8Array.reduce((acc, value) => acc + value, 0);
+  // const sum = 1;
 
   var bgImg2 = new Image();
   bgImg2.src = `./images/bg${level}/${currBgImg}.png`;
-  ctx2.drawImage(bgImg2, 0, 0, canvas2.width, canvas2.height);
+  // ctx2.drawImage(bgImg2, 0, 0, canvas2.width, canvas2.height);
 
   if (sum === 0) {
     toggleImage();
@@ -226,6 +226,7 @@ socket.onmessage = (event) => {
 
     // Draw the scaled image onto the main canvas using drawImage
     // ctx2.drawImage(scaledCanvas, 0, 0, 192, 192);
+    ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
     ctx2.drawImage(
       scaledCanvas,
       0, 0, scaledCanvas.width, scaledCanvas.height,  // Source rectangle (entire scaled canvas)
@@ -248,7 +249,7 @@ playButton.addEventListener('click', () => {
     level = (level + 1) % 3;
     playmusic(`./audio/level${level}_music.ogg`);
     transitionComplete = false;
-    preloadBgImages(runBgLoop);
+    // preloadBgImages(runBgLoop);
     }    
 });
 
@@ -265,4 +266,4 @@ document.addEventListener('click', closeMenu);
 // document.addEventListener('touchstart', closeMenu);
 
 // we should store our individual user's conversation on the client side and send it to the server thread locally and initialize it
-document.addEventListener('DOMContentLoaded', initialize_stuff);
+// document.addEventListener('DOMContentLoaded', initialize_stuff);
