@@ -1,12 +1,14 @@
+const userId = crypto.randomUUID();
+
 // hamburger menu
 const menuToggle = document.querySelector('.menu-toggle');
 const menu = document.querySelector('.menu');
 
 // websocket
-// const socket = new WebSocket("ws://127.0.0.1:8000/ws");
+// const socket = new WebSocket(`ws://127.0.0.1:8000/ws/${userId}`);
 // const socket = new WebSocket("ws:https://khatchig.onrender.com:10000/ws");
 // const socket = new WebSocket("wss://khatchig.onrender.com:10000/ws");
-const socket = new WebSocket("wss://khatchig.onrender.com/ws");
+const socket = new WebSocket(`wss://khatchig.onrender.com/ws/${userId}`);
 
 // image canvas
 const canvas2 = document.getElementById("imageCanvas");
@@ -97,8 +99,8 @@ function runBgLoop(i) {
 // LLM API fetch function
 async function fetchResponse(input_string) {
   try {
-    // const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
-    const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
+    // const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}/${userId}`);
+    const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}/${userId}`);
     const output = await response.json();
 
     // console.log(output["message"]);
