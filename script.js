@@ -103,6 +103,34 @@ async function fetchResponse(input_string) {
     const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}/${userId}`);
     const output = await response.json();
 
+    // color button container
+    // const colorContainer = document.getElementById("color-container");
+    colorContainer.innerHTML = "";
+
+    colorArrays = output["colors"]
+
+    colorArrays.forEach((colorArray, index) => {
+      const [red, green, blue, alpha] = colorArray;
+
+      // Create a div element for each color
+      const colorBox = document.createElement("div");
+      colorBox.classList.add("color-box");
+      
+      // Set the background color using rgba values
+      colorBox.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
+
+      // Add a click event listener to each color box
+      colorBox.addEventListener("click", () => {
+        // Send image data and click location to the server
+        const click_index = JSON.stringify({"click_index": index});
+        socket.send(click_index);
+      });
+
+      // Append the color box to the container
+      colorContainer.appendChild(colorBox);
+      // console.log(colorBox);
+    });
+
     // console.log(output["message"]);
     return output["message"];
 
@@ -166,8 +194,35 @@ function toggleImage() {
   }
 }
 
+const colorContainer = document.getElementById("color-container");
 // any future initializition stuff can be put in here, although a lot is handled outside
 function initialize_stuff() {
+  let colors = Array.from({ length: 7 }, (_, i) => Math.floor((i / 6) * 255 * 0.5));
+  let colorArrays = colors.slice(1).map(val => [val % 256, (2 * val) % 256, (3 * val) % 256, 255]);
+  // colorArrays = output["colors"]
+
+  colorArrays.forEach((colorArray, index) => {
+    const [red, green, blue, alpha] = colorArray;
+
+    // Create a div element for each color
+    const colorBox = document.createElement("div");
+    colorBox.classList.add("color-box");
+    
+    // Set the background color using rgba values
+    colorBox.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
+
+    // Add a click event listener to each color box
+    colorBox.addEventListener("click", () => {
+      // Send image data and click location to the server
+      const click_index = JSON.stringify({"click_index": index});
+      socket.send(click_index);
+    });
+
+    // Append the color box to the container
+    colorContainer.appendChild(colorBox);
+    // console.log(colorBox);
+  });
+  
 }
 
 // Event Listeners
@@ -198,6 +253,8 @@ socket.onmessage = (event) => {
   const result = JSON.parse(event.data);
 
   document.getElementById("answer").innerHTML = result["dialogue"];
+
+  // console.log(result["image"]);
 
   const uint8Array = new Uint8ClampedArray(result["image"]);
   // console.log("length of flattened", uint8Array.length);
@@ -268,4 +325,4 @@ document.addEventListener('click', closeMenu);
 // document.addEventListener('touchstart', closeMenu);
 
 // we should store our individual user's conversation on the client side and send it to the server thread locally and initialize it
-// document.addEventListener('DOMContentLoaded', initialize_stuff);
+document.addEventListener('DOMContentLoaded', initialize_stuff);

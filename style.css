@@ -197,6 +197,7 @@ nav {
 }
 
 #imageCanvas {
+  margin-top: 10px;
   position: relative;
   image-rendering: pixelated;
   width: 192px;
@@ -272,4 +273,20 @@ nav {
   height: 64px;
   margin-bottom: 5px;
   margin-top: 5px;
+}
+
+#color-container {
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 2px;
+}
+
+.color-box {
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  /* border: 1px solid #ffffff; */
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
 }
