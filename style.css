@@ -285,7 +285,9 @@ nav {
   width: 10px;
   height: 10px;
   margin: 0 5px;
-  /* border: 1px solid #ffffff; */
+  /* border: solid #ffffff; */
+  /* border-color: white; */
+  /* border-style: solid; */
   border-radius: 50%;
   display: inline-block;
   flex-shrink: 0;

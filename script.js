@@ -37,6 +37,9 @@ let lastChangeTime = 0;
 // LLM context initialized
 let context = [];
 
+// for toggling color dot borders
+// let borderWidth = 0;
+
 // Hamburger Functions
 function toggleMenu(e) {
   e.stopPropagation();
@@ -119,8 +122,23 @@ async function fetchResponse(input_string) {
       // Set the background color using rgba values
       colorBox.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
 
+      colorBox.dataset.borderWidth = 0; 
+
       // Add a click event listener to each color box
-      colorBox.addEventListener("click", () => {
+      colorBox.addEventListener("click", function() {
+        // Toggle state
+        let borderWidth = parseInt(this.dataset.borderWidth) ? 0 : 1; 
+        this.dataset.borderWidth = borderWidth;
+  
+        // Update styles
+        if(borderWidth === 1) {
+          this.style.border = '1px solid white';
+        } else {
+          this.style.border = 'none';  
+        }
+  
+        // console.log("this", this);
+        
         // Send image data and click location to the server
         const click_index = JSON.stringify({"click_index": index});
         socket.send(click_index);
@@ -211,8 +229,23 @@ function initialize_stuff() {
     // Set the background color using rgba values
     colorBox.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
 
+    colorBox.dataset.borderWidth = 0; 
+
     // Add a click event listener to each color box
-    colorBox.addEventListener("click", () => {
+    colorBox.addEventListener("click", function() {
+      // Toggle state
+      let borderWidth = parseInt(this.dataset.borderWidth) ? 0 : 1; 
+      this.dataset.borderWidth = borderWidth;
+
+      // Update styles
+      if(borderWidth === 1) {
+        this.style.border = '1px solid white';
+      } else {
+        this.style.border = 'none';  
+      }
+
+      // console.log("this", this);
+      
       // Send image data and click location to the server
       const click_index = JSON.stringify({"click_index": index});
       socket.send(click_index);
