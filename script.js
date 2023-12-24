@@ -4,7 +4,6 @@ const userId = crypto.randomUUID();
 const menuToggle = document.querySelector('.menu-toggle');
 const menu = document.querySelector('.menu');
 
-// websocket
 // const socket = new WebSocket(`ws://127.0.0.1:8000/ws/${userId}`);
 // const socket = new WebSocket("ws:https://khatchig.onrender.com:10000/ws");
 // const socket = new WebSocket("wss://khatchig.onrender.com:10000/ws");
@@ -37,8 +36,12 @@ let lastChangeTime = 0;
 // LLM context initialized
 let context = [];
 
-// for toggling color dot borders
-// let borderWidth = 0;
+// Draw a square around the clicked location
+let x = null;
+let y = null;
+ctx2.strokeStyle = 'red'; // Set the color of the square
+ctx2.lineWidth = 2; // Set the line width of the square
+let stepsTaken = 10; // Variable to track the number of steps taken
 
 // Hamburger Functions
 function toggleMenu(e) {
@@ -68,23 +71,23 @@ function playmusic(audioPath) {
 }
 
 // background image functions
-function preloadBgImages(callback) {
-  const imagesToLoad = 140;
-  let imagesLoaded = 0;
+// function preloadBgImages(callback) {
+//   const imagesToLoad = 140;
+//   let imagesLoaded = 0;
 
-  for (let i = 0; i < imagesToLoad; i++) {
-    const img = new Image();
-    img.src = `./images/bg${level}/${i}.png`;
-    img.onload = () => {
-      imagesLoaded++;
-      if (imagesLoaded === imagesToLoad) {
-        // All images are loaded, execute the callback
-        callback(0);
-        // callback();
-      }
-    };
-  }
-}
+//   for (let i = 0; i < imagesToLoad; i++) {
+//     const img = new Image();
+//     img.src = `./images/bg${level}/${i}.png`;
+//     img.onload = () => {
+//       imagesLoaded++;
+//       if (imagesLoaded === imagesToLoad) {
+//         // All images are loaded, execute the callback
+//         callback(0);
+//         // callback();
+//       }
+//     };
+//   }
+// }
 
 function runBgLoop(i) {
   currBgImg = i;
@@ -267,10 +270,23 @@ canvas2.addEventListener("click", (event) => {
       y: event.offsetY
   };
 
+  x = event.offsetX;
+  y = event.offsetY;
+
+  if (x != 0 && y != 0) {
+    stepsTaken = 0;
+  }
+
   // Send image data and click location to the server
   const message = JSON.stringify({
       click_location: clickLocation
   });
+
+  // Draw a square around the clicked location
+  ctx2.strokeStyle = 'red'; // Set the color of the square
+  ctx2.lineWidth = 2; // Set the line width of the square
+
+  // ctx2.strokeRect(event.offsetX * 6, event.offsetY * 6, 5 * 6, 5 * 6);
 
   socket.send(message);
 });
@@ -296,8 +312,8 @@ socket.onmessage = (event) => {
   const sum = uint8Array.reduce((acc, value) => acc + value, 0);
   // const sum = 1;
 
-  var bgImg2 = new Image();
-  bgImg2.src = `./images/bg${level}/${currBgImg}.png`;
+  // var bgImg2 = new Image();
+  // bgImg2.src = `./images/bg${level}/${currBgImg}.png`;
   // ctx2.drawImage(bgImg2, 0, 0, canvas2.width, canvas2.height);
 
   if (sum === 0) {
@@ -324,6 +340,12 @@ socket.onmessage = (event) => {
       0, 0, scaledCanvas.width, scaledCanvas.height,  // Source rectangle (entire scaled canvas)
       0, 0, canvas2.width*6, canvas2.height*6  // Destination rectangle 
     );
+
+    // Draw a square centered around the clicked location
+    stepsTaken = Math.min(stepsTaken + 1, 100);
+    if (stepsTaken < 6) {
+      ctx2.strokeRect((x-6)*(500/192), (y-6)*(500/192), 5*6, 5*6);
+    }  
   }
 };
 
