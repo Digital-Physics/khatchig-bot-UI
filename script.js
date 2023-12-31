@@ -111,12 +111,8 @@ async function fetchResponse(input_string) {
 
     colorArrays = output["colors"]
 
-    let counter = 0;
-
     colorArrays.forEach((colorArray, index) => {
       const [red, green, blue, alpha] = colorArray;
-
-      counter += 1;
 
       // Create a div element for each color
       const colorBox = document.createElement("div");
@@ -125,7 +121,7 @@ async function fetchResponse(input_string) {
       // Set the background color using rgba values
       colorBox.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
 
-      colorBox.dataset.borderWidth = counter % 2 == 0 ? 0: 1; 
+      colorBox.dataset.borderWidth = index % 2 == 0 ? 0: 1; 
 
       // Add a click event listener to each color box
       colorBox.addEventListener("click", function() {
@@ -217,12 +213,8 @@ function initialize_stuff() {
   let colorArrays = colors.slice(1).map(val => [val % 256, (2 * val) % 256, (3 * val) % 256, 255]);
   // colorArrays = output["colors"]
 
-  let counter = 0;
-
   colorArrays.forEach((colorArray, index) => {
     const [red, green, blue, alpha] = colorArray;
-
-    counter += 1;
 
     // Create a div element for each color
     const colorBox = document.createElement("div");
@@ -231,8 +223,7 @@ function initialize_stuff() {
     // Set the background color using rgba values
     colorBox.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
 
-    // colorBox.dataset.borderWidth = 0; 
-    colorBox.dataset.borderWidth = counter % 2 == 0 ? 0: 1; 
+    colorBox.dataset.borderWidth = index % 2 == 0 ? 0: 1; 
 
     // Add a click event listener to each color box
     colorBox.addEventListener("click", function() {
