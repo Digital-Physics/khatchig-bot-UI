@@ -5,8 +5,6 @@ const menuToggle = document.querySelector('.menu-toggle');
 const menu = document.querySelector('.menu');
 
 // const socket = new WebSocket(`ws://127.0.0.1:8000/ws/${userId}`);
-// const socket = new WebSocket("ws:https://khatchig.onrender.com:10000/ws");
-// const socket = new WebSocket("wss://khatchig.onrender.com:10000/ws");
 const socket = new WebSocket(`wss://khatchig.onrender.com/ws/${userId}`);
 
 // image canvas
@@ -22,8 +20,8 @@ const input = document.getElementById('input-box');
 // initialize state
 let currentAudio = null;
 var level = 0;
-var currBgImg = 139;
-let transitionComplete = true;
+// var currBgImg = 139;
+// let transitionComplete = true;
 
 // preload some images
 const faceImg1 = new Image();
@@ -89,18 +87,18 @@ function playmusic(audioPath) {
 //   }
 // }
 
-function runBgLoop(i) {
-  currBgImg = i;
-  setTimeout(function () {
-    if (currBgImg < 139) {
-      currBgImg++;
-      runBgLoop(currBgImg);
-    } else {
-      transitionComplete = true;
-      currBgImg = 139;
-    }
-  }, 50);
-}
+// function runBgLoop(i) {
+//   currBgImg = i;
+//   setTimeout(function () {
+//     if (currBgImg < 139) {
+//       currBgImg++;
+//       runBgLoop(currBgImg);
+//     } else {
+//       transitionComplete = true;
+//       currBgImg = 139;
+//     }
+//   }, 50);
+// }
 
 // LLM API fetch function
 async function fetchResponse(input_string) {
@@ -109,14 +107,16 @@ async function fetchResponse(input_string) {
     const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}/${userId}`);
     const output = await response.json();
 
-    // color button container
-    // const colorContainer = document.getElementById("color-container");
     colorContainer.innerHTML = "";
 
     colorArrays = output["colors"]
 
+    let counter = 0;
+
     colorArrays.forEach((colorArray, index) => {
       const [red, green, blue, alpha] = colorArray;
+
+      counter += 1;
 
       // Create a div element for each color
       const colorBox = document.createElement("div");
@@ -125,7 +125,7 @@ async function fetchResponse(input_string) {
       // Set the background color using rgba values
       colorBox.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
 
-      colorBox.dataset.borderWidth = 0; 
+      colorBox.dataset.borderWidth = counter % 2 == 0 ? 0: 1; 
 
       // Add a click event listener to each color box
       colorBox.addEventListener("click", function() {
@@ -139,8 +139,6 @@ async function fetchResponse(input_string) {
         } else {
           this.style.border = 'none';  
         }
-  
-        // console.log("this", this);
         
         // Send image data and click location to the server
         const click_index = JSON.stringify({"click_index": index});
@@ -149,17 +147,14 @@ async function fetchResponse(input_string) {
 
       // Append the color box to the container
       colorContainer.appendChild(colorBox);
-      // console.log(colorBox);
     });
 
-    // console.log(output["message"]);
     return output["message"];
 
   } catch (error) {
     console.error(error);
     throw error;
   }
-
 }
 
 // update text function
@@ -222,8 +217,12 @@ function initialize_stuff() {
   let colorArrays = colors.slice(1).map(val => [val % 256, (2 * val) % 256, (3 * val) % 256, 255]);
   // colorArrays = output["colors"]
 
+  let counter = 0;
+
   colorArrays.forEach((colorArray, index) => {
     const [red, green, blue, alpha] = colorArray;
+
+    counter += 1;
 
     // Create a div element for each color
     const colorBox = document.createElement("div");
@@ -232,7 +231,8 @@ function initialize_stuff() {
     // Set the background color using rgba values
     colorBox.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
 
-    colorBox.dataset.borderWidth = 0; 
+    // colorBox.dataset.borderWidth = 0; 
+    colorBox.dataset.borderWidth = counter % 2 == 0 ? 0: 1; 
 
     // Add a click event listener to each color box
     colorBox.addEventListener("click", function() {
@@ -246,8 +246,6 @@ function initialize_stuff() {
       } else {
         this.style.border = 'none';  
       }
-
-      // console.log("this", this);
       
       // Send image data and click location to the server
       const click_index = JSON.stringify({"click_index": index});
@@ -298,19 +296,15 @@ canvas2.addEventListener("click", (event) => {
 
 // EventHandler is called when the client gets a message through the websocket from the server, which is very often
 socket.onmessage = (event) => {
-  // console.log("+1");
   const result = JSON.parse(event.data);
 
   document.getElementById("answer").innerHTML = result["dialogue"];
-
-  // console.log(result["image"]);
 
   const uint8Array = new Uint8ClampedArray(result["image"]);
   // console.log("length of flattened", uint8Array.length);
 
   // Calculate the sum of all elements in the Uint8ClampedArray; we use all 0s to be a flag
   const sum = uint8Array.reduce((acc, value) => acc + value, 0);
-  // const sum = 1;
 
   // var bgImg2 = new Image();
   // bgImg2.src = `./images/bg${level}/${currBgImg}.png`;
@@ -359,12 +353,8 @@ input.addEventListener('keydown', function(event) {
 })
 
 playButton.addEventListener('click', () => {
-  if (transitionComplete) {
-    level = (level + 1) % 3;
-    playmusic(`./audio/level${level}_music.ogg`);
-    transitionComplete = false;
-    // preloadBgImages(runBgLoop);
-    }    
+  level = (level + 1) % 3;
+  playmusic(`./audio/level${level}_music.ogg`);
 });
 
 stopButton.addEventListener('click', () => {
