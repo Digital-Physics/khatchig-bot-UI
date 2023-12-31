@@ -120,7 +120,7 @@ async function fetchResponse(input_string) {
       
       // Set the background color using rgba values
       colorBox.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
-      console.log("colors", red, green, blue);
+      // console.log("colors", red, green, blue);
 
       colorBox.dataset.borderWidth = index % 2 == 0 ? 1: 0; 
   
