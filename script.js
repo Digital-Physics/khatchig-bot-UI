@@ -120,8 +120,16 @@ async function fetchResponse(input_string) {
       
       // Set the background color using rgba values
       colorBox.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
+      console.log("colors", red, green, blue);
 
-      colorBox.dataset.borderWidth = index % 2 == 0 ? 0: 1; 
+      colorBox.dataset.borderWidth = index % 2 == 0 ? 1: 0; 
+  
+      // Update styles
+      if(index % 2 == 1) {
+        colorBox.style.border = 'none';
+      } else {
+        colorBox.style.border = '1px solid white';  
+      }
 
       // Add a click event listener to each color box
       colorBox.addEventListener("click", function() {
@@ -209,9 +217,10 @@ function toggleImage() {
 const colorContainer = document.getElementById("color-container");
 // any future initializition stuff can be put in here, although a lot is handled outside
 function initialize_stuff() {
+  // in python: [int((i / 6) * 255 * 0.5) for i in range(7)]
   let colors = Array.from({ length: 7 }, (_, i) => Math.floor((i / 6) * 255 * 0.5));
-  let colorArrays = colors.slice(1).map(val => [val % 256, (2 * val) % 256, (3 * val) % 256, 255]);
-  // colorArrays = output["colors"]
+  /// create rgba color from a single number
+  let colorArrays = colors.slice(1).map(val => [val % 256, (2 * val + 100) % 256, (3 * val + 200) % 256, 255]);
 
   colorArrays.forEach((colorArray, index) => {
     const [red, green, blue, alpha] = colorArray;
@@ -223,7 +232,16 @@ function initialize_stuff() {
     // Set the background color using rgba values
     colorBox.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, ${alpha/255})`;
 
-    colorBox.dataset.borderWidth = index % 2 == 0 ? 0: 1; 
+    colorBox.dataset.borderWidth = index % 2 == 0 ? 1: 0; 
+    // console.log(index, index % 2, index % 2 == 0);
+    // console.log(colorBox.dataset.borderWidth, typeof(colorBox.dataset.borderWidth));
+
+    // Update styles
+    if(index % 2 == 1) {
+      colorBox.style.border = 'none';
+    } else {
+      colorBox.style.border = '1px solid white';  
+    }
 
     // Add a click event listener to each color box
     colorBox.addEventListener("click", function() {
