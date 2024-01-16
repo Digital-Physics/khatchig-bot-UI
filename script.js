@@ -47,14 +47,14 @@ class ParticleGridRoom {
       }
   }
 
-  scoreWithinRadius(backFlag = null) {
+  scoreWithinRadius(reverseFlag = null) {
       const [x, y] = this.pos;
       const pType = this.typeGrid[x][y];
       this.bestIdx = this.pos;
       let best = -Infinity;
       let tiebreakSet = [[x, y]];
 
-      if (backFlag) {
+      if (reverseFlag) {
           let score = null;
           const adjacentCells = [];
 
@@ -159,11 +159,11 @@ class ParticleGridRoom {
       this.bestIdx = tiebreakSet[bestCell];
   }
 
-  moveParticle(backFlag = null) {
+  moveParticle(reverseFlag = null) {
       const [x, y] = this.pos;
       const pType = this.typeGrid[x][y];
 
-      this.scoreWithinRadius(backFlag);
+      this.scoreWithinRadius(reverseFlag);
       const [bestX, bestY] = this.bestIdx;
 
       if (x === bestX && y === bestY) {
@@ -175,7 +175,7 @@ class ParticleGridRoom {
       }
   }
 
-  step(clickLocationArg, clickIndexArg, backFlag = null) {
+  step(clickLocationArg, clickIndexArg, reverseFlag = null) {
       if (clickIndexArg) {
           this.affinity[clickIndexArg + 1] = this.affinity[clickIndexArg + 1].map(element => 1 - element);
           this.copyType[clickIndexArg + 1] = getRandomChoice([...Array(this.numTypes + 1).keys()].filter(i => i !== clickIndexArg + 1 && i !== 0));
@@ -223,7 +223,7 @@ class ParticleGridRoom {
             const randParticleIdx = Math.floor(Math.random() * particles.length);
             this.pos = particles[randParticleIdx];
             this.tryReplaceParticle();
-            this.moveParticle(backFlag);
+            this.moveParticle(reverseFlag);
           } else {
             resetFlag = true;
           }
@@ -259,7 +259,10 @@ class ParticleGridRoom {
   }
 
   corruptibleDialogue() {
-      const loss = Math.max(300 - 2 ** (this.counter * 0.06), 0);
+      console.log(this.particleCount);
+      // this loss acts one way in the beginning, while one of the functions is positive while the counter is low...
+      // and another way after the particle counts starts dropping below ~250; but why on reverse?
+      const loss = Math.max(Math.max(200 - 2 ** (this.counter * 0.06), 0), 0.5*(250 - this.particleCount));
       const flipN = [];
       const listOfTextResponse = [this.llmMessage];
 
@@ -570,8 +573,8 @@ function playmusic(audioPath) {
 // LLM API fetch function
 async function fetchResponse(input_string) {
   try {
-    // const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
-    const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
+    const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
+    // const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
     const output = await response.json();
     return output["message"];
   } catch (error) {
@@ -668,7 +671,6 @@ function loop(particleAffinity) {
     var result = particleAffinity.step(clickLocation, clickIndex, true); 
   }
 
-  // console.log("at corruptible", particleAffinity.llmMessage);
   if (particleAffinity.llmMessage) {
     dialogue = particleAffinity.corruptibleDialogue()
   } else {
