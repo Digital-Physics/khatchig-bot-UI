@@ -260,7 +260,7 @@ class ParticleGridRoom {
 
   corruptibleDialogue() {
       console.log(this.particleCount);
-      // this loss acts one way in the beginning, while one of the functions is positive while the counter is low...
+      // this loss acts one way in the beginning, while the counter is low...
       // and another way after the particle counts starts dropping below ~250; but why on reverse?
       const loss = Math.max(Math.max(200 - 2 ** (this.counter * 0.06), 0), 0.5*(250 - this.particleCount));
       const flipN = [];
@@ -275,7 +275,7 @@ class ParticleGridRoom {
 
       for (let i = 0; i < tempDialogue.length; i++) {
           for (let charIdx = 0; charIdx < flipN[i]; charIdx += 2) {
-              tempDialogue[i] = tempDialogue[i].substring(0, charIdx) + getRandomChoice([0,1]) + tempDialogue[i].substring(charIdx + 1);
+              tempDialogue[i] = tempDialogue[i].substring(0, charIdx) + String(getRandomChoice([0,1])) + tempDialogue[i].substring(charIdx + 1);
           }
       }
 
