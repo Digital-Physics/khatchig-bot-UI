@@ -275,7 +275,7 @@ class ParticleGridRoom {
 
       for (let i = 0; i < tempDialogue.length; i++) {
           for (let charIdx = 0; charIdx < flipN[i]; charIdx += 2) {
-              tempDialogue[i] = tempDialogue[i].substring(0, charIdx) + "☀︎" + tempDialogue[i].substring(charIdx + 1);
+              tempDialogue[i] = tempDialogue[i].substring(0, charIdx) + getRandomChoice([0,1]) + tempDialogue[i].substring(charIdx + 1);
           }
       }
 
