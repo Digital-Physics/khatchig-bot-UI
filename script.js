@@ -263,9 +263,11 @@ class ParticleGridRoom {
       // this loss acts one way in the beginning, while the counter is low...
       // and another way after the particle counts starts dropping below ~250; but why on reverse?
       const loss = Math.max(Math.max(200 - 2 ** (this.counter * 0.06), 0), 0.5*(250 - this.particleCount));
+
       const flipN = [];
       const listOfTextResponse = [this.llmMessage];
 
+      // can handle more than one string
       for (const line of listOfTextResponse) {
           const lengthToFlip = Math.min(loss, line.length);
           flipN.push(lengthToFlip);
@@ -654,7 +656,7 @@ function loop(particleAffinity) {
     if (particleAffinity.counter < 100) {
       var result = new Array(4096).fill(0);
     } else {
-      particleAffinity.llmMessage = "Welcome 🙏🧠👾☯️❤️🤖🛸✨ Ask me philosophical questions by entering text below, or play with my pattern by clicking the colored dots and squares.";
+      particleAffinity.llmMessage = "Welcome 🙏 Ask me philosophical questions by entering text below, or play with my pattern by clicking the colored dots and squares. 🙏🧠👾☯️❤️🤖🛸✨";
       var result = particleAffinity.step(clickLocation, clickIndex);
       particleAffinity.state = "PERSISTING"; 
     }
