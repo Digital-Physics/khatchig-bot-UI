@@ -406,9 +406,14 @@ async function dictCreator(params) {
     // generate new colors dots
     colorContainer.innerHTML = ""; //?
 
-    let colors = Array.from({ length: params.numTypes + 1 }, (_, i) => Math.floor((i / 6) * 255 * params.colorShift));
-    /// create rgba color from a single number
-    let colorArrays = colors.slice(1).map(val => [val % 256, (2 * val + 100) % 256, (3 * val + 200) % 256, 255]);
+    const colorArrays = Array.from({ length: params.numTypes }, (_, i) => {
+      const seed = i * params.colorShift;
+      const random = (x) => Math.sin(x) * 10000;
+      const h = random(seed);
+      const s = 50 + random(seed + 1) % 50; // Saturation between 50% and 100%
+      const l = 50 + random(seed + 2) % 50; // Lightness between 50% and 100%
+      return [Math.round((h / 100) * 255), Math.round((s / 100) * 255), Math.round((l / 100) * 255), 255];
+    });
   
     colorArrays.forEach((colorArray, index) => {
       const [red, green, blue, alpha] = colorArray;
@@ -656,7 +661,7 @@ function loop(particleAffinity) {
     if (particleAffinity.counter < 100) {
       var result = new Array(4096).fill(0);
     } else {
-      particleAffinity.llmMessage = "Welcome 🙏 Ask me philosophical questions by entering text below, or play with my pattern by clicking the colored dots and squares. 🙏🧠👾☯️❤️🤖🛸✨";
+      particleAffinity.llmMessage = "Welcome 👾 Ask me philosophical questions by entering text below, or play with my pattern by clicking the colored dots and squares. 🙏🧠👾☯️❤️🤖🛸✨";
       var result = particleAffinity.step(clickLocation, clickIndex);
       particleAffinity.state = "PERSISTING"; 
     }
