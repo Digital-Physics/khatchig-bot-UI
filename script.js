@@ -186,14 +186,14 @@ class ParticleGridRoom {
       let x = clickLocationArg ? clickLocationArg.x : 0;
       let y = clickLocationArg ? clickLocationArg.y : 0;
       
-      x = Math.min(Math.floor(x / 6), 31);
-      y = Math.min(Math.floor(y / 6), 31);
+      x = Math.min(Math.floor(x / 6), 32-1);
+      y = Math.min(Math.floor(y / 6), 32-1);
 
       if (!(x === 0 && y === 0)) {
           for (let rangeI = 0; rangeI < 5; rangeI++) {
               for (let rangeJ = 0; rangeJ < 5; rangeJ++) {
-                  const yRow = Math.max(Math.min(rangeJ + y - 2, 31), 0);
-                  const xCol = Math.min(Math.max(rangeI + x - 2, 0), 31);
+                  const yRow = Math.max(Math.min(rangeJ + y - 2, 32-1), 0);
+                  const xCol = Math.min(Math.max(rangeI + x - 2, 0), 32-1);
                   this.typeGrid[yRow][xCol] = 0;
                   clickLocation = null; // reset after use
               }
@@ -205,7 +205,10 @@ class ParticleGridRoom {
 
       // this.density is not used since the face2 alpha channel now dictates how many cells are on
       // for (let t = 0; t < 0.2 * this.density * (this.length ** 2); t++) {
-      for (let part = 0; part < 0.5 * particleAffinity.particleCount; part++) {
+      const proportion_to_update = this.length == 32? 0.5: 0.5/16; 
+
+      // for (let part = 0; part < 0.5 * particleAffinity.particleCount; part++) {
+      for (let part = 0; part < proportion_to_update * particleAffinity.particleCount; part++) {
           const particles = [];
 
           // console.log("typeGrid", this.typeGrid);
@@ -259,7 +262,7 @@ class ParticleGridRoom {
   }
 
   corruptibleDialogue() {
-      console.log(this.particleCount);
+      // console.log(this.particleCount);
       // this loss acts one way in the beginning, while the counter is low...
       // and another way after the particle counts starts dropping below ~250; but why on reverse?
       const loss = Math.max(Math.max(200 - 2 ** (this.counter * 0.06), 0), 0.5*(250 - this.particleCount));
@@ -347,24 +350,29 @@ function minDistanceToZero(binaryArray) {
 async function dictCreator(params) {
   let mask;
   let particleCount = 0;
+  // console.log("params", params);
 
   try {
     const image = await new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => resolve(img);
       img.onerror = (error) => reject(error);
-      img.src = 'images/face2.png';
+      img.src = params.length == 2*16? 'images/face2.png': 'images/face3.png';
     });
 
     const canvas = document.createElement('canvas');
-    canvas.width = image.width;
-    canvas.height = image.height;
+    // canvas.width = image.width;
+    canvas.width = params.length;
+    // canvas.height = image.height;
+    canvas.height = params.length;
 
     const ctx = canvas.getContext('2d');
     ctx.drawImage(image, 0, 0);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
     mask = [];
+
+    // console.log("canvas", canvas.height);
 
     for (let j = 0; j < canvas.height; j++) {
       mask.push([]);
@@ -388,6 +396,7 @@ async function dictCreator(params) {
         }
       }
     }
+    // console.log("got here");
 
     const affinity = Array.from({ length: params.numTypes + 1 }, () =>
       Array.from({ length: params.numTypes + 1 }, () => getRandomChoice([0, 1], [0.35, 0.65]))
@@ -454,6 +463,7 @@ async function dictCreator(params) {
       colorContainer.appendChild(colorBox);
     });
 
+    // console.log("length", params.length);
     // Return the result
     return {
       length: params.length,
@@ -497,6 +507,7 @@ async function create() {
 
   try {
     const result = await dictCreator(params);
+    // console.log("result", result);
     const particleGridRoom = new ParticleGridRoom(result);
     return particleGridRoom;
   } catch (error) {
@@ -659,7 +670,7 @@ function loop(particleAffinity) {
 
   if (particleAffinity.state === "BLINKING") {
     if (particleAffinity.counter < 100) {
-      var result = new Array(4096).fill(0);
+      var result = new Array(4*32*32).fill(0);
     } else {
       particleAffinity.llmMessage = "Welcome 👾 Ask me philosophical questions by entering text below, or play with my pattern by clicking the colored dots and squares. 🙏🧠👾☯️❤️🤖🛸✨";
       var result = particleAffinity.step(clickLocation, clickIndex);
@@ -667,7 +678,7 @@ function loop(particleAffinity) {
     }
   } else if (particleAffinity.state === "AFTERFETCH") {
     if (particleAffinity.counter < 50) {
-      var result = new Array(4096).fill(0);
+      var result = new Array(4*32*32).fill(0);
     } else {
       var result = particleAffinity.step(clickLocation, clickIndex);
       particleAffinity.state = "PERSISTING";
@@ -712,10 +723,11 @@ function loop(particleAffinity) {
     // Draw the scaled image onto the main canvas using drawImage
     // ctx2.drawImage(scaledCanvas, 0, 0, 192, 192);
     ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+    // console.log(scaledCanvas.width, scaledCanvas.height);
     ctx2.drawImage(
       scaledCanvas,
       0, 0, scaledCanvas.width, scaledCanvas.height,  // Source rectangle (entire scaled canvas)
-      0, 0, canvas2.width*6, canvas2.height*6  // Destination rectangle 
+      0, 0, canvas2.width*(192/32), canvas2.height*(192/32)  // Destination rectangle 
     );
 
     if (particleAffinity.clickLocation) {
@@ -783,5 +795,31 @@ stopButton.addEventListener('click', () => {
   } 
 });
 
-menuToggle.addEventListener('click', toggleMenu);
-document.addEventListener('click', closeMenu);
+async function addInfoToBackend() {
+    const use_localhost = false;
+    const backend_address = use_localhost? 'http://127.0.0.1:8001/visits' : 'https://gpteopardy-backend-service.onrender.com/visits';
+    const response = await fetch(backend_address, {
+        method: 'POST', 
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            site_id: 'khatchigbot',
+        })
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+        return result;
+    } else {
+        console.error('Failed to track site visit:', response.statusText);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    addInfoToBackend();
+    menuToggle.addEventListener('click', toggleMenu);
+    document.addEventListener('click', closeMenu);
+});
+
+
