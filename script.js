@@ -592,7 +592,8 @@ function playmusic(audioPath) {
 async function fetchResponse(input_string) {
   try {
     // const response = await fetch(`http://127.0.0.1:8000/get-response/${input_string}`);
-    const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
+    // const response = await fetch(`https://khatchig.onrender.com/get-response/${input_string}`);
+    const response = await fetch(`https://gpteopardy-backend-service.onrender.com/get-response/${input_string}`);
     const output = await response.json();
     return output["message"];
   } catch (error) {
